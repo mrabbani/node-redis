@@ -52,14 +52,22 @@ class Repository {
      * @param  array  keys
      * @return Object
      */
-    many(keys) {
-        let values = this.store.many(keys);
+    async many(keys) {
+        // let values = this.store.many(keys);
+        if (Array.isArray(keys));
+        let result = {};
+        let self = this;
+        for (let i = 0; i < keys.length; i++) {
+            let temp = await (this.get(keys[i]));
+            result = {...result, [keys[i]]: temp };
+        }
 
-        values.map(function(value, key) {
-            return this.handleManyResult(keys, key, value);
+        Object.keys(result).
+        forEach((value, key) => {
+            this.handleManyResult(keys, key, value);
         });
 
-        return values;
+        return result;
     }
 
     /**
@@ -75,7 +83,7 @@ class Repository {
         // the defaultValue value for this cache value. This defaultValue could be a callback
         // so we will execute the value function which will resolve it if needed.
         if (value === null) {
-            this.event(new CacheMissed(key));
+            // this.event(new CacheMissed(key));
 
             // return isset(keys[key]) ? value(keys[key]) : null;
             return null;
@@ -84,7 +92,7 @@ class Repository {
         // If we found a valid value we will fire the "hit" event and return the value
         // back from this function. The "hit" event gives developers an opportunity
         // to listen for every possible cache "hit" throughout this applications.
-        this.event(new CacheHit(key, value));
+        // this.event(new CacheHit(key, value));
 
         return value;
     }

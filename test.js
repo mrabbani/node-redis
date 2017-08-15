@@ -5,6 +5,7 @@ const cache = new Repository(store);
 
 async function get() {
     cache.put('test', 12, 1060);
+    cache.put('test1', 12, 1060);
 
     let value = await cache.get('test', 'ter');
     let value1 = await cache.get('test1', 'ter');
@@ -12,5 +13,6 @@ async function get() {
     console.log('r1esult value ', value1)
     console.log('r1esult value ', value1)
     console.log('key value ', await cache.has('test'));
+    console.log('key value ', await cache.many(['test', 'test1']));
 }
 get();
