@@ -1,4 +1,5 @@
 const Redis = require('ioredis');
+
 let redis = new Redis({
     port: 6379, // Redis port
     host: '127.0.0.1', // Redis host
@@ -9,15 +10,7 @@ let redis = new Redis({
 
 class RedisStore {
     get(key) {
-        let value = null;
-        value = redis.get(key).then(function(result) {
-            value = result
-            console.log(result);
-            return result;
-        });
-
-        return value;
-
+        return redis.get(key);
     }
 
     set(key, value, seconds) {
@@ -39,13 +32,14 @@ class RedisStore {
     many(keys) {
         let original = {};
 
-        keys.forEach((value, index) => {
-            original = {...original, [value]: index };
-        });
+        // keys.forEach((value, index) => {
+        //     original = {...original, [value]: index };
+        // });
 
         return original;
     }
 }
+
 let store = new RedisStore();
 
 module.exports = store;

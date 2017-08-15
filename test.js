@@ -3,10 +3,14 @@ const Repository = require('./CacheRepository');
 
 const cache = new Repository(store);
 
-cache.put('test', 12, 10);
+async function get() {
+    cache.put('test', 12, 1060);
 
-let value = cache.get('test', 'ter');
-
-console.log(value);
-
-value.then((val) => {});
+    let value = await cache.get('test', 'ter');
+    let value1 = await cache.get('test1', 'ter');
+    console.log('result value ', value)
+    console.log('r1esult value ', value1)
+    console.log('r1esult value ', value1)
+    console.log('key value ', await cache.has('test'));
+}
+get();

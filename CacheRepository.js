@@ -11,8 +11,8 @@ class Repository {
      * @param  string  key
      * @return bool
      */
-    has(key) {
-        return this.get(key) !== null;
+    async has(key) {
+        return (await this.get(key)) !== null;
     }
 
     /**
@@ -22,12 +22,13 @@ class Repository {
      * @param  mixed   defaultValue
      * @return mixed
      */
-    get(key, defaultValue = null) {
+    async get(key, defaultValue = null) {
         if (Array.isArray(key)) {
             return this.many(key);
         }
-
-        let value = this.store.get(this.itemKey(key));
+        let value = defaultValue;
+        await this.store.get(this.itemKey(key))
+            .then((res) => { value = res });
 
         // If we could not find the cache value, we will fire the missed event and get
         // the defaultValue value for this cache value. This defaultValue could be a callback
@@ -95,8 +96,8 @@ class Repository {
      * @param  mixed   defaultValue
      * @return mixed
      */
-    pull(key, defaultValue = null) {
-        value = this.get(key, defaultValue);
+    async pull(key, defaultValue = null) {
+        let value = await this.get(key, defaultValue);
         this.forget(key);
 
         return value;
@@ -145,7 +146,7 @@ class Repository {
      * @param  \DateTime|float|int  minutes
      * @return bool
      */
-    add(key, value, minutes) {
+    async add(key, value, minutes) {
         if (is_null(minutes = this.getMinutes(minutes))) {
             return false;
         }
@@ -161,7 +162,7 @@ class Repository {
         // If the value did not exist in the cache, we will put the value in the cache
         // so it exists for subsequent requests. Then, we will return true so it is
         // easy to know if the value gets added. Otherwise, we will return false.
-        if (this.get(key) === null) {
+        if ((await this.get(key)) === null) {
             this.put(key, value, minutes);
 
             return true;
@@ -177,7 +178,7 @@ class Repository {
      * @param  mixed  value
      * @return int|bool
      */
-    increment(key, value = 1) {
+    async increment(key, value = 1) {
         return this.store.increment(key, value);
     }
 
@@ -188,7 +189,7 @@ class Repository {
      * @param  mixed  value
      * @return int|bool
      */
-    decrement(key, value = 1) {
+    async decrement(key, value = 1) {
         return this.store.decrement(key, value);
     }
 
